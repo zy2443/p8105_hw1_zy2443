@@ -1,21 +1,81 @@
 ---
-title: "Simple document"
-output: html_document
+title: "homework 1"
+author: "Zihan Yu"
+output:
+  github_document: default
+  pdf_document: default
 ---
 
-I'm an R Markdown document! 
-
-# Section 1
-
-Here's a **code chunk** that samples from 
-a _normal distribution_:
+This is my solution to HW1.
 
 ```{r}
-samp = rnorm(100)
-length(samp)
+library(tidyverse)
 ```
 
-# Section 2
+## Problem 1
 
-I can take the mean of the sample, too!
-The mean is `r mean(samp)`.
+Create a data frame with the specified elements.
+
+```{r}
+prob1_df =
+  tibble(
+    samp = rnorm(10),
+    samp_gt_0 = samp > 0,
+    char_vec = c("a","b","c","d","e","f","g","h","i","j"),
+    factor_vec = factor(c("low","low","low","mod","mod","mod","mod","high","high","high"))
+  )
+```
+
+Take the mean of each variable in my data frame.
+
+```{r}
+mean(pull(prob1_df, samp))
+mean(pull(prob1_df, samp_gt_0))
+mean(pull(prob1_df, char_vec))
+mean(pull(prob1_df, factor_vec))
+```
+
+I can take the mean of numbers and logical but not character or factor.
+
+```{r}
+as.numeric(pull(prob1_df, samp))
+as.numeric(pull(prob1_df, samp_gt_0))
+as.numeric(pull(prob1_df, char_vec))
+as.numeric(pull(prob1_df, factor_vec))
+```
+
+Convert the logical vector to numeric, and multiply the random sample by the result.
+Convert the logical vector to a factor, and multiply the random sample by the result.
+Convert the logical vector to a factor and then convert the result to numeric, and multiply the random sample by the result.
+```{r}
+as.numeric(pull(prob1_df, samp_gt_0)) * pull(prob1_df, samp_gt_0)
+as.factor(pull(prob1_df, samp_gt_0)) * pull(prob1_df, samp_gt_0)
+as.numeric(as.factor(pull(prob1_df, samp_gt_0))) * pull(prob1_df, samp_gt_0)
+```
+
+## Problem 2
+
+```{r}
+install.packages("palmerpenguins")
+```
+
+```{r}
+data("penguins", package = "palmerpenguins")
+```
+
+Variables in penguins are species, island, bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g, sex and year. Species, island and sex are factors. Bill_length_mm and bill_depth_mm are numbers. Flipper_length_mm, body_mass_g and year are integers. This dataset has 344 rows and 8 columns. Mean of flipper_length_mm is NA because there are missing values in this column. 
+
+```{r}
+penguins
+nrow(penguins)
+ncol(penguins)
+mean(pull(penguins, flipper_length_mm))
+```
+
+```{r}
+library(ggplot2)
+plot = ggplot(penguins, aes(x = bill_length_mm, y = flipper_length_mm, color = species)) + geom_point()
+ggsave("plot.png")
+```
+
+
